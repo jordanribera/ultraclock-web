@@ -195,7 +195,7 @@ Clock = {
 			
 			PathString = PathString + ' L' + (ArcStart.X + 210) + ',' + (ArcStart.Y + 210);
 			
-			PathString = PathString + ' A198.6,198.6 ' + '0' + ' 0,1 ' + (ArcEnd.X + 210) + ',' + (ArcEnd.Y + 210);
+			PathString = PathString + ' A198.6,198.6 ' + '0' + ' 1,1 ' + (ArcEnd.X + 210) + ',' + (ArcEnd.Y + 210);
 			
 			PathString = PathString + ' L210 210 Z';
 			
