@@ -19,12 +19,10 @@ export const minuteAngle = (amount) => {
   return increment * amount - (Math.PI / 2);
 }
 
-export const getSunrise = (latitude, longitude, date = new Date(), zenith = DEFAULT_ZENITH) => {
-  let event = calculate(latitude, longitude, true, zenith, date);
-  return event.getHours() + (event.getMinutes() / 60) + (event.getSeconds() / 3600);
+export const decimalHour = (date) => {
+  return date.getHours() + (date.getMinutes() / 60) + (date.getSeconds() / 3600);
 }
 
-export const getSunset = (latitude, longitude, date= new Date(), zenith = DEFAULT_ZENITH) => {
-  let event = calculate(latitude, longitude, false, zenith, date);
-  return event.getHours() + (event.getMinutes() / 60) + (event.getSeconds() / 3600);
+export const decimalMinute = (date) => {
+  return date.getMinutes() + (date.getSeconds() / 60);
 }
