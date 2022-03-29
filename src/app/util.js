@@ -2,6 +2,10 @@ import { calculate } from "sunrise-sunset-js";
 
 const DEFAULT_ZENITH = 90.8333;
 
+export const toDegrees = (radAngle) => radAngle * (180 / Math.PI);
+export const toRadians = (degAngle) => degAngle * (Math.PI / 180);
+
+
 export const polarToCartesian = (radius, angle) => {
   let outputX = radius * Math.cos(angle);
   let outputY = radius * Math.sin(angle);
@@ -24,5 +28,5 @@ export const decimalHour = (date) => {
 }
 
 export const decimalMinute = (date) => {
-  return date.getMinutes() + (date.getSeconds() / 60);
+  return date.getUTCMinutes() + (date.getUTCSeconds() / 60);
 }

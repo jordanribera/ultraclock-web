@@ -1,14 +1,16 @@
 import React from "react";
+import PropTypes from "prop-types";
 import { getSunrise, getSunset } from "../app/sundial";
 import { ZENITH_DEFAULT, ZENITH_CIVIL, ZENITH_NAUTICAL, ZENITH_ASTRONOMICAL } from "../app/sundial";
 
-import { decimalHour, decimalMinute, hourAngle, minuteAngle, polarToCartesian } from "../app/util";
+import { decimalHour, decimalMinute, hourAngle, minuteAngle, polarToCartesian, toDegrees } from "../app/util";
 
 class Clock extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
       now: new Date(),
+      timezone: props.timezone,
     };
   }
 
@@ -27,12 +29,11 @@ class Clock extends React.Component {
   }
 
   render() {
-    let rise = getSunrise(47.45, -122.3).toString();
-    let set = getSunset(47.45, -122.3).toString();
+    let rise = getSunrise(this.props.latitude, this.props.longitude).toString();
+    let set = getSunset(this.props.latitude, this.props.longitude).toString();
 
     return (
       <div>
-          <div>ceci n'est pas une clock</div>
           <div>rise: {rise}</div>
           <div>set: {set}</div>
           <div class="analogClock">
@@ -60,8 +61,10 @@ class Clock extends React.Component {
 
   getNumerals() {
     let numerals = [...Array(24).keys()];
+    //let roll = `rotate(-${toDegrees(hourAngle(decimalHour(this.state.now)) + (Math.PI / 2))}, 210 210)`
+    let roll = '';
     return (
-      <g>
+      <g transform={roll}>
         <g>
           {numerals.map((i) => {
             let c = polarToCartesian(150, hourAngle(i));
@@ -142,11 +145,13 @@ class Clock extends React.Component {
   }
 
   getShade(zenith = ZENITH_DEFAULT, color = "silver") {
-    let arcStart = polarToCartesian(199, hourAngle(decimalHour(getSunrise(47.45, -122.3, zenith))));
-    let arcEnd = polarToCartesian(199, hourAngle(decimalHour(getSunset(47.45, -122.3, zenith))));
-    let pathString = `M210 210 L${arcStart.X + 210},${arcStart.Y + 210} A199,199 0 0,0 ${arcEnd.X + 210},${arcEnd.Y + 210} L210 210 Z`
+    let arcStart = polarToCartesian(199, hourAngle(decimalHour(getSunrise(this.props.latitude, this.props.longitude, zenith))));
+    let arcEnd = polarToCartesian(199, hourAngle(decimalHour(getSunset(this.props.latitude, this.props.longitude, zenith))));
+    let pathString = `M210 210 L${arcStart.X + 210},${arcStart.Y + 210} A199,199 0 0,0 ${arcEnd.X + 210},${arcEnd.Y + 210} L210 210 Z`;
+    // let roll = `rotate(-${toDegrees(hourAngle(decimalHour(this.state.now)) + (Math.PI / 2))}, 210 210)`;
+    let roll = '';
     return (
-      <g>
+      <g transform={roll}>
         <path
           fill={color}
           d={pathString}
@@ -162,9 +167,11 @@ class Clock extends React.Component {
   }
 
   getHands() {
-    let hourHandAngle = hourAngle(decimalHour(this.state.now));
+    let hourHandAngle = hourAngle(decimalHour(this.state.now)); // - (this.state.now.getTimezoneOffset() / 60));
     let hourInner = polarToCartesian(100, hourHandAngle);
     let hourOuter = polarToCartesian(130, hourHandAngle);
+    //let roll = `rotate(-${toDegrees(hourAngle(decimalHour(this.state.now)) + (Math.PI / 2))}, 210 210)`;
+    let roll = ''
 
     let minuteHandAngle = minuteAngle(decimalMinute(this.state.now));
     let minuteInner = polarToCartesian(170, minuteHandAngle);
@@ -179,6 +186,7 @@ class Clock extends React.Component {
           x1={hourInner.X + 210} y1={hourInner.Y + 210}
           x2={hourOuter.X + 210} y2={hourOuter.Y + 210}
           stroke="black" stroke-width="8"
+          transform={roll}
         />
         <line
           x1={minuteInner.X + 210} y1={minuteInner.Y + 210}
@@ -212,6 +220,12 @@ class Clock extends React.Component {
 
     );
   }
+}
+
+Clock.propTypes = {
+  latitude: PropTypes.number,
+  longitude: PropTypes.number,
+  timezone: PropTypes.string,
 }
 
 export default Clock;

@@ -9,10 +9,11 @@ class Client extends React.Component {
   }
 
   render(dispatch) {
+    // <Clock latitude={19.70} longitude={-155.1} />
+    // <Clock latitude={35.48} longitude={139.3} />
     return (
       <div>
-        client test
-        <Clock />
+        <Clock latitude={47.45} longitude={-122.3} />
       </div>
     )
   }
